@@ -28,7 +28,6 @@ class GlobusComputeEngine(GlobusComputeEngineBase):
         label: str = "GlobusComputeEngine",
         max_retries_on_system_failure: int = 0,
         strategy: t.Optional[SimpleStrategy] = SimpleStrategy(),
-        executor: t.Optional[HighThroughputExecutor] = None,
         **kwargs,
     ):
         """The ``GlobusComputeEngine`` is a shim over `Parsl's HighThroughputExecutor
@@ -66,12 +65,11 @@ class GlobusComputeEngine(GlobusComputeEngineBase):
         )
         self.strategy = strategy
         self.max_workers_per_node = 1
-        if executor is None:
-            executor = HighThroughputExecutor(  # type: ignore
-                *args,
-                label=label,
-                **kwargs,
-            )
+        executor = HighThroughputExecutor(
+            *args,
+            label=label,
+            **kwargs,
+        )
         self.executor = executor
 
     def start(
