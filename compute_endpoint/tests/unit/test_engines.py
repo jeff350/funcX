@@ -182,13 +182,13 @@ def test_gc_engine_system_failure(engine_runner):
 
 
 @pytest.mark.parametrize("engine_type", (GlobusComputeEngine, HighThroughputEngine))
-def test_serialized_engine_config_has_provider(engine_type: GlobusComputeEngineBase):
+def test_serialized_engine_config_has_strategy(engine_type: GlobusComputeEngineBase):
     ep_config = Config(executors=[engine_type(address="127.0.0.1")])
 
     res = serialize_config(ep_config)
     executor = res["executors"][0].get("executor") or res["executors"][0]
 
-    assert executor.get("provider")
+    assert executor.get("strategy")
 
 
 def test_gcengine_pass_through_to_executor(mocker: MockFixture):
@@ -219,7 +219,7 @@ def test_gcengine_start_pass_through_to_executor(
 
     run_dir = tmp_path
     scripts_dir = str(tmp_path / "submit_scripts")
-    engine = GlobusComputeEngine(executor=mock_executor)
+    engine = GlobusComputeEngine()
 
     assert mock_executor.run_dir != run_dir
     assert mock_executor.provider.script_dir != scripts_dir
@@ -227,5 +227,6 @@ def test_gcengine_start_pass_through_to_executor(
     engine.start(endpoint_id=uuid.uuid4(), run_dir=run_dir, results_passthrough=Queue())
     engine.shutdown()
 
-    assert mock_executor.run_dir == run_dir
-    assert mock_executor.provider.script_dir == scripts_dir
+    assert engine.executor.run_dir == run_dir
+    assert engine.executor.provider.script_dir == scripts_dir
+    assert isinstance(engine.executor.provider, mock.MagicMock)
