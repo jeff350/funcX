@@ -67,7 +67,7 @@ class GlobusComputeEngine(GlobusComputeEngineBase):
         self.max_workers_per_node = 1
         executor = HighThroughputExecutor(
             *args,
-            label=label,
+            label=label,  # type: ignore[misc]
             **kwargs,
         )
         self.executor = executor
