@@ -242,6 +242,9 @@ def version_command():
         "https://docs.globus.org/api/auth/developer-guide/#authentication-policies."
     ),
 )
+@click.option(
+    "--subscription-uuid", hidden=True, help="Associate endpoint with a subscription"
+)
 @name_arg
 @common_options
 def configure_endpoint(
@@ -251,6 +254,7 @@ def configure_endpoint(
     multi_user: bool,
     display_name: str | None,
     auth_policy: str | None,
+    subscription_uuid: str | None,
 ):
     """Configure an endpoint
 
@@ -268,7 +272,12 @@ def configure_endpoint(
     compute_dir = get_config_dir()
     ep_dir = compute_dir / name
     Endpoint.configure_endpoint(
-        ep_dir, endpoint_config, multi_user, display_name, auth_policy
+        ep_dir,
+        endpoint_config,
+        multi_user,
+        display_name,
+        auth_policy,
+        subscription_uuid,
     )
 
 
